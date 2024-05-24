@@ -1,0 +1,173 @@
+/dts-v1/;
+
+/ {
+	model = "Freescale i.MX8MQ EVK";
+	compatible = "fsl,imx8mq-evk\0fsl,imx8mq";
+	interrupt-parent = <0x01>;
+	#address-cells = <0x02>;
+	#size-cells = <0x02>;
+
+	aliases {
+		serial1 = "/soc@0/bus@30800000/serial@30890000";
+		mmc2 = "/soc@0/bus@30800000/mmc@30b60000";
+	};
+
+	memory@50000000 {
+		device_type = "memory";
+		reg = <0x00 0x50000000 0x00 0x80000000>;
+	};
+
+	cpus {
+		#address-cells = <0x01>;
+		#size-cells = <0x00>;
+
+		cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53";
+			reg = <0x00>;
+			clock-latency = <0xee6c>;
+			next-level-cache = <0x02>;
+			enable-method = "psci";
+			#cooling-cells = <0x02>;
+			phandle = <0x03>;
+		};
+
+		cpu@1 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53";
+			reg = <0x01>;
+			clock-latency = <0xee6c>;
+			next-level-cache = <0x02>;
+			enable-method = "psci";
+			#cooling-cells = <0x02>;
+			phandle = <0x04>;
+		};
+
+		l2-cache0 {
+			compatible = "cache";
+			phandle = <0x02>;
+		};
+	};
+
+	pmu {
+		compatible = "arm,cortex-a53-pmu";
+		interrupts = <0x01 0x07 0x04>;
+		interrupt-parent = <0x01>;
+		interrupt-affinity = <0x03 0x04>;
+	};
+
+	clock-osc-25m {
+		compatible = "fixed-clock";
+		#clock-cells = <0x00>;
+		clock-frequency = <0x17d7840>;
+		clock-output-names = "osc_25m";
+		phandle = <0x05>;
+	};
+
+	interrupt-controller@38800000 {
+		compatible = "arm,gic-v3";
+		reg = <0x00 0x38800000 0x00 0x10000 0x00 0x38880000 0x00 0xc0000>;
+		#interrupt-cells = <0x03>;
+		interrupt-controller;
+		interrupts = <0x01 0x09 0x04>;
+		interrupt-parent = <0x01>;
+		phandle = <0x01>;
+	};
+
+	timer {
+		compatible = "arm,armv8-timer";
+		interrupts = <0x01 0x0d 0x3f08 0x01 0x0e 0x3f08 0x01 0x0b 0x3f08 0x01 0x0a 0x3f08>;
+		clock-frequency = <0x7f2815>;
+	};
+
+	clock@7 {
+		compatible = "fixed-clock";
+		#clock-cells = <0x00>;
+		clock-frequency = <0x00>;
+		clock-output-names = "clk_dummy";
+		phandle = <0x06>;
+	};
+
+	clock@8 {
+		compatible = "fixed-clock";
+		#clock-cells = <0x00>;
+		clock-frequency = <0x17d78400>;
+		clock-output-names = "400m";
+		phandle = <0x08>;
+	};
+
+	clock@9 {
+		compatible = "fixed-clock";
+		#clock-cells = <0x00>;
+		clock-frequency = <0xfdad680>;
+		clock-output-names = "266m";
+		phandle = <0x07>;
+	};
+
+	clock@10 {
+		compatible = "fixed-clock";
+		#clock-cells = <0x00>;
+		clock-frequency = <0x4c4b400>;
+		clock-output-names = "80m";
+	};
+
+	soc@0 {
+		compatible = "simple-bus";
+		#address-cells = <0x01>;
+		#size-cells = <0x01>;
+		ranges = <0x00 0x00 0x00 0x3e000000>;
+		dma-ranges = <0x40000000 0x00 0x40000000 0xc0000000>;
+
+		bus@30800000 {
+			compatible = "fsl,imx8mq-aips-bus\0simple-bus";
+			#address-cells = <0x01>;
+			#size-cells = <0x01>;
+			ranges = <0x30800000 0x30800000 0x400000 0x8000000 0x8000000 0x10000000>;
+
+			serial@30890000 {
+				compatible = "fsl,imx8mq-uart\0fsl,imx6q-uart";
+				reg = <0x30890000 0x10000>;
+				interrupts = <0x00 0x1b 0x04>;
+				status = "okay";
+				clocks = <0x05 0x05>;
+				clock-names = "ipg\0per";
+			};
+			// sd card
+			mmc@30b50000 {
+				compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
+				reg = <0x30b50000 0x10000>;
+				interrupts = <0x00 0x17 0x04>;
+				clocks = <0x06 0x07 0x08>;
+				clock-names = "ipg\0ahb\0per";
+				fsl,tuning-start-tap = <0x14>;
+				fsl,tuning-step = <0x02>;
+				bus-width = <0x04>;
+				status = "okay";
+			};
+			// emmc
+			mmc@30b60000 {
+				compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
+				reg = <0x30b60000 0x10000>;
+				interrupts = <0x00 0x18 0x04>;
+				fsl,tuning-start-tap = <0x14>;
+				fsl,tuning-step = <0x02>;
+				status = "okay";
+				clocks = <0x06 0x07 0x08>;
+				clock-names = "ipg\0ahb\0per";
+				bus-width = <0x08>;
+				non-removable;
+			};
+		};
+	};
+
+	chosen {
+		bootargs = "clk_ignore_unused mem=1G console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/mmcblk3p1 rootwait rw";
+		stdout-path = "/soc@0/bus@30800000/serial@30890000";
+	};
+
+	hvisor_device {
+		compatible = "hvisor";
+		interrupt-parent = <0x01>;
+		interrupts = <0x00 0x20 0x01>;
+	};
+};
