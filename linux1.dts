@@ -17,6 +17,16 @@
 		reg = <0x00 0x50000000 0x00 0x80000000>;
 	};
 
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+		inmate_reserved: inmate@90000000 {
+                no-map;
+                reg = <0 0x90000000 0x0 0x40000000>;
+        };
+	};
+	
 	cpus {
 		#address-cells = <0x01>;
 		#size-cells = <0x00>;
@@ -145,23 +155,23 @@
 				status = "okay";
 			};
 			// emmc
-			mmc@30b60000 {
-				compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
-				reg = <0x30b60000 0x10000>;
-				interrupts = <0x00 0x18 0x04>;
-				fsl,tuning-start-tap = <0x14>;
-				fsl,tuning-step = <0x02>;
-				status = "okay";
-				clocks = <0x06 0x07 0x08>;
-				clock-names = "ipg\0ahb\0per";
-				bus-width = <0x08>;
-				non-removable;
-			};
+			// mmc@30b60000 {
+			// 	compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
+			// 	reg = <0x30b60000 0x10000>;
+			// 	interrupts = <0x00 0x18 0x04>;
+			// 	fsl,tuning-start-tap = <0x14>;
+			// 	fsl,tuning-step = <0x02>;
+			// 	status = "okay";
+			// 	clocks = <0x06 0x07 0x08>;
+			// 	clock-names = "ipg\0ahb\0per";
+			// 	bus-width = <0x08>;
+			// 	non-removable;
+			// };
 		};
 	};
-
+	// sd card
 	chosen {
-		bootargs = "clk_ignore_unused mem=1G console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/mmcblk3p1 rootwait rw";
+		bootargs = "clk_ignore_unused mem=1G console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/mmcblk0p1 rootwait rw";
 		stdout-path = "/soc@0/bus@30800000/serial@30890000";
 	};
 
