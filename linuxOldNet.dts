@@ -10,8 +10,14 @@
 
 	aliases {
 		serial1 = "/soc@0/bus@30800000/serial@30890000";
-		mmc1 = "/soc@0/bus@30800000/mmc@30b50000";
-		mmc2 = "/soc@0/bus@30800000/mmc@30b60000";
+		mmc2 = "/soc@0/bus@30800000/mmc@30b50000";
+		ethernet0 = "/soc@0/bus@30800000/ethernet@30be0000";
+		//ethernet1 = "/soc@0/bus@30800000/ethernet@30bf0000";
+		gpio0 = "/soc@0/bus@30000000/gpio@30200000";
+		gpio1 = "/soc@0/bus@30000000/gpio@30210000";
+		gpio2 = "/soc@0/bus@30000000/gpio@30220000";
+		gpio3 = "/soc@0/bus@30000000/gpio@30230000";
+		gpio4 = "/soc@0/bus@30000000/gpio@30240000";
 	};
 
 	cpus {
@@ -111,80 +117,7 @@
 
 	memory@50000000 {
 		device_type = "memory";
-		reg = <0x0 0x50000000 0x0 0x80000000>;
-	};
-
-	reserved-memory {
-		#address-cells = <0x02>;
-		#size-cells = <0x02>;
-		ranges;
-
-		ocram@900000 {
-			no-map;
-			reg = <0x00 0x900000 0x00 0x70000>;
-		};
-
-		// linux,cma {
-		// 	compatible = "shared-dma-pool";
-		// 	reusable;
-		// 	size = <0x00 0x3c000000>;
-		// 	alloc-ranges = <0x00 0x40000000 0x00 0xc0000000>;
-		// 	linux,cma-default;
-		// };
-
-		dsp@92400000 {
-			no-map;
-			reg = <0x00 0x92400000 0x00 0x2000000>;
-			phandle = <0x87>;
-		};
-
-		nonroot@50000000 {
-			no-map;
-			reg = <0x00 0x50000000 0x00 0x30000000>;
-		};
-
-		// vdev0vring0@55000000 {
-		// 	compatible = "shared-dma-pool";
-		// 	reg = <0x00 0x55000000 0x00 0x8000>;
-		// 	no-map;
-		// 	phandle = <0x09>;
-		// };
-
-		// vdev0vring1@55008000 {
-		// 	compatible = "shared-dma-pool";
-		// 	reg = <0x00 0x55008000 0x00 0x8000>;
-		// 	no-map;
-		// 	phandle = <0x0a>;
-		// };
-
-		// vdevbuffer@55400000 {
-		// 	compatible = "shared-dma-pool";
-		// 	reg = <0x00 0x55400000 0x00 0x100000>;
-		// 	no-map;
-		// 	phandle = <0x0b>;
-		// };
-
-		// rsc-table {
-		// 	reg = <0x00 0x550ff000 0x00 0x1000>;
-		// 	no-map;
-		// };
-
-		// rpmsg@0x55800000 {
-		// 	no-map;
-		// 	reg = <0x00 0x55800000 0x00 0x800000>;
-		// };
-
-		// imx8mp-cm7 {
-		// 	compatible = "fsl,imx8mp-cm7";
-		// 	rsc-da = <0x55000000>;
-		// 	clocks = <0x03 0x55>;
-		// 	mbox-names = "tx\0rx\0rxdb";
-		// 	mboxes = <0x08 0x00 0x01 0x08 0x01 0x01 0x08 0x03 0x01>;
-		// 	memory-region = <0x09 0x0a 0x0b>;
-		// 	status = "okay";
-		// };
-
-
+		reg = <0x0 0x50000000 0x0 0x40000000>;
 	};
 
 	clock-osc-32k {
@@ -245,6 +178,188 @@
 	psci {
 		compatible = "arm,psci-0.2";
 		method = "smc";
+	};
+
+	power-domains {
+		compatible = "simple-bus";
+
+		hsiomix-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			active-wakeup;
+			rpm-always-on;
+			#power-domain-cells = <0x00>;
+			domain-index = <0x00>;
+			domain-name = "hsiomix";
+			phandle = <0x0c>;
+		};
+
+		pcie-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x01>;
+			domain-name = "pcie";
+			parent-domains = <0x0c>;
+			phandle = <0x78>;
+		};
+
+		usbotg1-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x02>;
+			domain-name = "usb_otg1";
+			parent-domains = <0x0c>;
+		};
+
+		usbotg2-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x03>;
+			domain-name = "usb_otg2";
+			parent-domains = <0x0c>;
+		};
+
+		mlmix-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x04>;
+			domain-name = "mlmix";
+			clocks = <0x03 0x69 0x03 0x6a 0x03 0x10b>;
+			phandle = <0x86>;
+		};
+
+		audiomix-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x05>;
+			domain-name = "audiomix";
+			clocks = <0x03 0x11c 0x03 0x5a>;
+			phandle = <0x56>;
+		};
+
+		gpumix-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x06>;
+			domain-name = "gpumix";
+			clocks = <0x03 0x107 0x03 0x66 0x03 0x65>;
+			phandle = <0x0d>;
+		};
+
+		gpu2d-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x07>;
+			domain-name = "gpu2d";
+			parent-domains = <0x0d>;
+			clocks = <0x03 0xf7>;
+			phandle = <0x7e>;
+		};
+
+		gpu3d-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x08>;
+			domain-name = "gpu3d";
+			parent-domains = <0x0d>;
+			clocks = <0x03 0xf8 0x03 0x58>;
+			phandle = <0x7d>;
+		};
+
+		vpumix-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x09>;
+			domain-name = "vpumix";
+			clocks = <0x03 0x11a>;
+			phandle = <0x0e>;
+		};
+
+		vpug1-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x0a>;
+			domain-name = "vpu_g1";
+			parent-domains = <0x0e>;
+			clocks = <0x03 0x106>;
+			phandle = <0x83>;
+		};
+
+		vpug2-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x0b>;
+			domain-name = "vpu_g2";
+			parent-domains = <0x0e>;
+			clocks = <0x03 0x10a>;
+			phandle = <0x84>;
+		};
+
+		vpuh1-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x0c>;
+			domain-name = "vpu_h1";
+			parent-domains = <0x0e>;
+			clocks = <0x03 0x109>;
+			phandle = <0x85>;
+		};
+
+		mediamix-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x0d>;
+			domain-name = "mediamix";
+			rpm-always-on;
+			clocks = <0x03 0x10e 0x03 0x10d>;
+			phandle = <0x0f>;
+		};
+
+		power-domain@14 {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x0e>;
+			domain-name = "ispdwp";
+			parent-domains = <0x0f>;
+			clocks = <0x03 0x5c>;
+			phandle = <0x71>;
+		};
+
+		mipiphy1-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			rpm-always-on;
+			domain-index = <0x0f>;
+			domain-name = "mipi_phy1";
+			parent-domains = <0x0f>;
+			phandle = <0x5a>;
+		};
+
+		mipiphy2-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x10>;
+			domain-name = "mipi_phy2";
+			parent-domains = <0x0f>;
+			phandle = <0x75>;
+		};
+
+		hdmimix-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x11>;
+			domain-name = "hdmimix";
+			clocks = <0x03 0x116 0x03 0x63 0x03 0xa8>;
+			phandle = <0x10>;
+		};
+
+		hdmiphy-pd {
+			compatible = "fsl,imx8m-pm-domain";
+			#power-domain-cells = <0x00>;
+			domain-index = <0x12>;
+			domain-name = "hdmi_phy";
+			parent-domains = <0x10>;
+			phandle = <0x6e>;
+		};
 	};
 
 	pmu {
@@ -645,11 +760,11 @@
 				};
 			};
 
-			iomuxc-gpr@30340000 {
-				compatible = "fsl,imx8mp-iomuxc-gpr\0fsl,imx7d-iomuxc-gpr\0fsl,imx6q-iomuxc-gpr\0syscon";
-				reg = <0x30340000 0x10000>;
-				phandle = <0x29>;
-			};
+			// iomuxc-gpr@30340000 {
+			// 	compatible = "fsl,imx8mp-iomuxc-gpr\0fsl,imx7d-iomuxc-gpr\0fsl,imx6q-iomuxc-gpr\0syscon";
+			// 	reg = <0x30340000 0x10000>;
+			// 	phandle = <0x29>;
+			// };
 
 			// ocotp-ctrl@30350000 {
 			// 	compatible = "fsl,imx8mp-ocotp\0fsl,imx8mm-ocotp\0syscon";
@@ -663,16 +778,16 @@
 			// 		phandle = <0x05>;
 			// 	};
 
-			// 	mac-address@640 {
-			// 		reg = <0x90 0x06>;
-			// 		phandle = <0x4f>;
-			// 	};
+			mac-address@640 {
+				reg = <0x90 0x06>;
+				phandle = <0x4f>;
+			};
 
-			// 	mac-address@650 {
-			// 		reg = <0x96 0x06>;
-			// 		phandle = <0x52>;
-			// 	};
-			// };
+			mac-address@650 {
+				reg = <0x96 0x06>;
+				phandle = <0x52>;
+			};
+			//};
 
 			anatop@30360000 {
 				compatible = "fsl,imx8mp-anatop\0fsl,imx8mm-anatop\0syscon";
@@ -841,27 +956,27 @@
 			// 	};
 			// };
 
-			// mmc@30b40000 {
-			// 	compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
-			// 	reg = <0x30b40000 0x10000>;
-			// 	interrupts = <0x00 0x16 0x04>;
-			// 	clocks = <0x03 0x00 0x03 0x5f 0x03 0x101>;
-			// 	clock-names = "ipg\0ahb\0per";
-			// 	assigned-clocks = <0x03 0x88>;
-			// 	assigned-clock-rates = <0x17d78400>;
-			// 	fsl,tuning-start-tap = <0x14>;
-			// 	fsl,tuning-step = <0x02>;
-			// 	bus-width = <0x04>;
-			// 	status = "okay";
-			// 	pinctrl-names = "default\0state_100mhz\0state_200mhz";
-			// 	pinctrl-0 = <0x40 0x41>;
-			// 	pinctrl-1 = <0x42 0x41>;
-			// 	pinctrl-2 = <0x43 0x41>;
-			// 	non-removable;
-			// 	pm-ignore-notify;
-			// 	keep-power-in-suspend;
-			// 	mmc-pwrseq = <0x44>;
-			// };
+			//mmc@30b40000 {
+			//	compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
+			//	reg = <0x30b40000 0x10000>;
+			//	interrupts = <0x00 0x16 0x04>;
+			//	clocks = <0x03 0x00 0x03 0x5f 0x03 0x101>;
+			//	clock-names = "ipg\0ahb\0per";
+			//	assigned-clocks = <0x03 0x88>;
+			//	assigned-clock-rates = <0x17d78400>;
+			//	fsl,tuning-start-tap = <0x14>;
+			//	fsl,tuning-step = <0x02>;
+			//	bus-width = <0x04>;
+			//	status = "okay";
+			//	pinctrl-names = "default\0state_100mhz\0state_200mhz";
+			//	pinctrl-0 = <0x40 0x41>;
+			//	pinctrl-1 = <0x42 0x41>;
+			//	pinctrl-2 = <0x43 0x41>;
+			//	non-removable;
+			//	pm-ignore-notify;
+			//	keep-power-in-suspend;
+			//	mmc-pwrseq = <0x44>;
+			//};
 
 			mmc@30b50000 {
 				compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
@@ -879,29 +994,10 @@
 				pinctrl-0 = <0x45 0x46>;
 				pinctrl-1 = <0x47 0x46>;
 				pinctrl-2 = <0x48 0x46>;
-				cd-gpios = <0x49 0x0c 0x01>;
+				//cd-gpios = <0x49 0x0c 0x01>;
 				vmmc-supply = <0x4a>;
 			};
-			// emmc
-			// mmc@30b60000 {
-			// 	compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
-			// 	reg = <0x30b60000 0x10000>;
-			// 	interrupts = <0x00 0x18 0x04>;
-			// 	clocks = <0x03 0x00 0x03 0x5f 0x03 0x115>;
-			// 	clock-names = "ipg\0ahb\0per";
-			// 	assigned-clocks = <0x03 0xa9>;
-			// 	assigned-clock-rates = <0x17d78400>;
-			// 	fsl,tuning-start-tap = <0x14>;
-			// 	fsl,tuning-step = <0x02>;
-			// 	bus-width = <0x08>;
-			// 	status = "okay";
-			// 	pinctrl-names = "default\0state_100mhz\0state_200mhz";
-			// 	pinctrl-0 = <0x4b>;
-			// 	pinctrl-1 = <0x4c>;
-			// 	pinctrl-2 = <0x4d>;
-			// 	non-removable;
-			// };
-			
+
 			serial@30890000 {
 				compatible = "fsl,imx8mp-uart\0fsl,imx6q-uart";
 				reg = <0x30890000 0x10000>;
@@ -916,16 +1012,80 @@
 				//clock-frequency = <408000000>;
 			};
 
-			dma-controller@30bd0000 {
-				compatible = "fsl,imx8mq-sdma\0fsl,imx7d-sdma";
-				reg = <0x30bd0000 0x10000>;
-				interrupts = <0x00 0x02 0x04>;
-				clocks = <0x03 0xec 0x03 0x6b>;
-				clock-names = "ipg\0ahb";
-				#dma-cells = <0x03>;
-				fsl,sdma-ram-script-name = "imx/sdma/sdma-imx7d.bin";
-				phandle = <0x22>;
+			ethernet@30be0000 {
+				compatible = "fsl,imx8mm-fec\0fsl,imx8mq-fec\0fsl,imx6sx-fec";
+				reg = <0x30be0000 0x10000>;
+				interrupts = <0x00 0x76 0x04 0x00 0x77 0x04 0x00 0x78 0x04>;
+				clocks = <0x03 0xc0 0x03 0xf2 0x03 0x84 0x03 0x83 0x03 0x85>;
+				clock-names = "ipg\0ahb\0ptp\0enet_clk_ref\0enet_out";
+				assigned-clocks = <0x03 0x5e 0x03 0x84 0x03 0x83 0x03 0x84>;
+				assigned-clock-parents = <0x03 0x36 0x03 0x3a 0x03 0x3b>;
+				assigned-clock-rates = <0x00 0x00 0x7735940 0x5f5e100>;
+				fsl,num-tx-queues = <0x03>;
+				fsl,num-rx-queues = <0x03>;
+				nvmem-cells = <0x4f>;
+				nvmem-cell-names = "mac-address";
+				nvmem_macaddr_swap;
+				stop-mode = <0x29 0x10 0x03>;
+				fsl,wakeup_irq = <0x02>;
+				status = "okay";
+				pinctrl-names = "default";
+				pinctrl-0 = <0x50>;
+				reset-gpio = <0x25 0x04 0x01>;
+				phy-mode = "rgmii-id";
+				phy-handle = <0x51>;
+				fsl,magic-packet;
+
+				mdio {
+					#address-cells = <0x01>;
+					#size-cells = <0x00>;
+
+					ethernet-phy@1 {
+						compatible = "ethernet-phy-ieee802.3-c22";
+						reg = <0x01>;
+						eee-broken-1000t;
+						at803x,vddio-1p8v;
+						phandle = <0x51>;
+					};
+				};
 			};
+
+			// ethernet@30bf0000 {
+			// 	compatible = "nxp,imx8mp-dwmac-eqos\0snps,dwmac-5.10a";
+			// 	reg = <0x30bf0000 0x10000>;
+			// 	interrupts = <0x00 0x86 0x04 0x00 0x87 0x04>;
+			// 	interrupt-names = "eth_wake_irq\0macirq";
+			// 	clocks = <0x03 0xed 0x03 0xe1 0x03 0x82 0x03 0x81>;
+			// 	clock-names = "stmmaceth\0pclk\0ptp_ref\0tx";
+			// 	assigned-clocks = <0x03 0x5e 0x03 0x82 0x03 0x81>;
+			// 	assigned-clock-parents = <0x03 0x36 0x03 0x3a 0x03 0x3b>;
+			// 	assigned-clock-rates = <0x00 0x5f5e100 0x7735940>;
+			// 	nvmem-cells = <0x52>;
+			// 	nvmem-cell-names = "mac-address";
+			// 	nvmem_macaddr_swap;
+			// 	intf_mode = <0x29 0x04>;
+			// 	status = "okay";
+			// 	pinctrl-names = "default";
+			// 	pinctrl-0 = <0x53>;
+			// 	reset-gpio = <0x25 0x05 0x01>;
+			// 	phy-mode = "rgmii-id";
+			// 	phy-handle = <0x54>;
+
+			// 	mdio {
+			// 		compatible = "snps,dwmac-mdio";
+			// 		#address-cells = <0x01>;
+			// 		#size-cells = <0x00>;
+
+			// 		ethernet-phy@1 {
+			// 			compatible = "ethernet-phy-ieee802.3-c22";
+			// 			reg = <0x01>;
+			// 			eee-broken-1000t;
+			// 			at803x,vddio-1p8v;
+			// 			at803x,hibernate-disable;
+			// 			phandle = <0x54>;
+			// 		};
+			// 	};
+			// };
 		};
 	};
 
@@ -953,11 +1113,12 @@
 		bootargs = "clk_ignore_unused iomem=relaxed console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/mmcblk1p1 rootwait rw";
 		stdout-path = "/soc@0/bus@30800000/serial@30890000";
 	};
-	
+
 	hvisor_device {
 		compatible = "hvisor";
 		interrupt-parent = <0x01>;
 		interrupts = <0x00 0x20 0x01>;
 	};
+
 };
 

@@ -1,22 +1,22 @@
 /dts-v1/;
 
 / {
-	model = "Freescale i.MX8MQ EVK";
-	compatible = "fsl,imx8mq-evk\0fsl,imx8mq";
+	model = "Freescale i.MX8MP EVK";
+	compatible = "fsl,imx8mp-evk\0fsl,imx8mp";
 	interrupt-parent = <0x01>;
 	#address-cells = <0x02>;
 	#size-cells = <0x02>;
 
 	aliases {
-		serial1 = "/soc@0/bus@30800000/serial@30890000";
+		serial3 = "/soc@0/bus@30800000/serial@30a60000";
 		mmc2 = "/soc@0/bus@30800000/mmc@30b60000";
 	};
 
 	memory@50000000 {
 		device_type = "memory";
-		reg = <0x00 0x50000000 0x00 0x40000000>;
+		reg = <0x00 0x50000000 0x00 0x30000000>;
 	};
-
+	
 	cpus {
 		#address-cells = <0x01>;
 		#size-cells = <0x00>;
@@ -29,7 +29,6 @@
 			next-level-cache = <0x02>;
 			enable-method = "psci";
 			#cooling-cells = <0x02>;
-			phandle = <0x03>;
 		};
 
 		cpu@3 {
@@ -40,7 +39,6 @@
 			next-level-cache = <0x02>;
 			enable-method = "psci";
 			#cooling-cells = <0x02>;
-			phandle = <0x04>;
 		};
 
 		l2-cache0 {
@@ -49,19 +47,9 @@
 		};
 	};
 
-	pmu {
-		compatible = "arm,cortex-a53-pmu";
-		interrupts = <0x01 0x07 0x04>;
-		interrupt-parent = <0x01>;
-		interrupt-affinity = <0x03 0x04>;
-	};
-
-	clock-osc-25m {
-		compatible = "fixed-clock";
-		#clock-cells = <0x00>;
-		clock-frequency = <0x17d7840>;
-		clock-output-names = "osc_25m";
-		phandle = <0x05>;
+	psci {
+		compatible = "arm,psci-1.0";
+		method = "smc";
 	};
 
 	interrupt-controller@38800000 {
@@ -85,15 +73,15 @@
 		#clock-cells = <0x00>;
 		clock-frequency = <0x00>;
 		clock-output-names = "clk_dummy";
-		phandle = <0x06>;
+		phandle = <0x04>;
 	};
 
 	clock@8 {
 		compatible = "fixed-clock";
 		#clock-cells = <0x00>;
-		clock-frequency = <0x17d78400>;
-		clock-output-names = "400m";
-		phandle = <0x08>;
+		clock-frequency = <0xbebc200>;
+		clock-output-names = "200m";
+		phandle = <0x06>;
 	};
 
 	clock@9 {
@@ -101,14 +89,28 @@
 		#clock-cells = <0x00>;
 		clock-frequency = <0xfdad680>;
 		clock-output-names = "266m";
-		phandle = <0x07>;
+		phandle = <0x05>;
 	};
 
-	clock@10 {
+	clock@1 {
 		compatible = "fixed-clock";
 		#clock-cells = <0x00>;
-		clock-frequency = <0x4c4b400>;
-		clock-output-names = "80m";
+		clock-frequency = <0x16e3600>;
+		clock-output-names = "osc_24m";
+		phandle = <0x03>;
+	};
+
+	pci@fd700000 {
+		compatible = "pci-host-ecam-generic";
+		device_type = "pci";
+		bus-range = <0x00 0x00>;
+		#address-cells = <0x03>;
+		#size-cells = <0x02>;
+		#interrupt-cells = <0x01>;
+		interrupt-map-mask = <0x00 0x00 0x00 0x07>;
+		interrupt-map = <0x00 0x00 0x00 0x01 0x01 0x00 0x9a 0x01 0x00 0x00 0x00 0x02 0x01 0x00 0x9b 0x01 0x00 0x00 0x00 0x03 0x01 0x00 0x9c 0x01 0x00 0x00 0x00 0x04 0x01 0x00 0x9d 0x01>;
+		reg = <0x00 0xfd700000 0x00 0x100000>;
+		ranges = <0x2000000 0x00 0x10000000 0x00 0x10000000 0x00 0x10000>;
 	};
 
 	soc@0 {
@@ -116,35 +118,23 @@
 		#address-cells = <0x01>;
 		#size-cells = <0x01>;
 		ranges = <0x00 0x00 0x00 0x3e000000>;
-		dma-ranges = <0x40000000 0x00 0x40000000 0xc0000000>;
 
 		bus@30800000 {
-			compatible = "fsl,imx8mq-aips-bus\0simple-bus";
+			compatible = "simple-bus";
+			reg = <0x30800000 0x400000>;
 			#address-cells = <0x01>;
 			#size-cells = <0x01>;
-			ranges = <0x30800000 0x30800000 0x400000 0x8000000 0x8000000 0x10000000>;
+			ranges;
 
-			serial@30890000 {
-				compatible = "fsl,imx8mq-uart\0fsl,imx6q-uart";
-				reg = <0x30890000 0x10000>;
-				interrupts = <0x00 0x1b 0x04>;
+			serial@30a60000 {
+				compatible = "fsl,imx8mp-uart\0fsl,imx6q-uart";
+				reg = <0x30a60000 0x10000>;
+				interrupts = <0x00 0x1d 0x04>;
 				status = "okay";
-				clocks = <0x05 0x05>;
+				clocks = <0x03 0x03>;
 				clock-names = "ipg\0per";
 			};
-			// sd card
-			mmc@30b50000 {
-				compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
-				reg = <0x30b50000 0x10000>;
-				interrupts = <0x00 0x17 0x04>;
-				clocks = <0x06 0x07 0x08>;
-				clock-names = "ipg\0ahb\0per";
-				fsl,tuning-start-tap = <0x14>;
-				fsl,tuning-step = <0x02>;
-				bus-width = <0x04>;
-				status = "okay";
-			};
-			// emmc
+
 			mmc@30b60000 {
 				compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
 				reg = <0x30b60000 0x10000>;
@@ -152,7 +142,7 @@
 				fsl,tuning-start-tap = <0x14>;
 				fsl,tuning-step = <0x02>;
 				status = "okay";
-				clocks = <0x06 0x07 0x08>;
+				clocks = <0x04 0x05 0x06>;
 				clock-names = "ipg\0ahb\0per";
 				bus-width = <0x08>;
 				non-removable;
@@ -161,7 +151,8 @@
 	};
 
 	chosen {
-		bootargs = "clk_ignore_unused console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/mmcblk3p1 rootwait rw";
-		stdout-path = "/soc@0/bus@30800000/serial@30890000";
+		// bootargs = "clk_ignore_unused console=ttymxc3,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/vda rootwait rw";
+		bootargs = "clk_ignore_unused console=ttymxc3,115200 earlycon=ec_imx6q,0x30a60000,115200 root=/dev/mmcblk2p1 rootwait rw";
+		stdout-path = "/soc@0/bus@30800000/serial@30a60000";
 	};
 };
