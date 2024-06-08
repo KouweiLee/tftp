@@ -8,9 +8,9 @@
 	#size-cells = <0x02>;
 
 	aliases {
-		serial1 = "/soc@0/bus@30800000/serial@30890000";
+		// serial1 = "/soc@0/bus@30800000/serial@30890000";
 		serial3 = "/soc@0/bus@30800000/serial@30a60000";
-		mmc2 = "/soc@0/bus@30800000/mmc@30b60000";
+		// mmc2 = "/soc@0/bus@30800000/mmc@30b60000";
 	};
 
 	memory@50000000 {
@@ -123,22 +123,23 @@
 		#address-cells = <0x01>;
 		#size-cells = <0x01>;
 		ranges = <0x00 0x00 0x00 0x3e000000>;
-		dma-ranges = <0x40000000 0x00 0x40000000 0xc0000000>;
+		// dma-ranges = <0x40000000 0x00 0x40000000 0xc0000000>;
 
 		bus@30800000 {
-			compatible = "fsl,imx8mq-aips-bus\0simple-bus";
+			compatible = "simple-bus";
 			#address-cells = <0x01>;
 			#size-cells = <0x01>;
 			reg = <0x30800000 0x400000>;
+			ranges;
 
-			serial@30890000 {
-				compatible = "fsl,imx8mq-uart\0fsl,imx6q-uart";
-				reg = <0x30890000 0x10000>;
-				interrupts = <0x00 0x1b 0x04>;
-				status = "okay";
-				clocks = <0x05 0x05>;
-				clock-names = "ipg\0per";
-			};
+			// serial@30890000 {
+			// 	compatible = "fsl,imx8mq-uart\0fsl,imx6q-uart";
+			// 	reg = <0x30890000 0x10000>;
+			// 	interrupts = <0x00 0x1b 0x04>;
+			// 	status = "okay";
+			// 	clocks = <0x05 0x05>;
+			// 	clock-names = "ipg\0per";
+			// };
 
 			serial@30a60000 {
 				compatible = "fsl,imx8mp-uart\0fsl,imx6q-uart";
@@ -164,18 +165,18 @@
 			// 	status = "okay";
 			// };
 			// // emmc
-			mmc@30b60000 {
-				compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
-				reg = <0x30b60000 0x10000>;
-				interrupts = <0x00 0x18 0x04>;
-				fsl,tuning-start-tap = <0x14>;
-				fsl,tuning-step = <0x02>;
-				status = "okay";
-				clocks = <0x06 0x07 0x08>;
-				clock-names = "ipg\0ahb\0per";
-				bus-width = <0x08>;
-				non-removable;
-			};
+			// mmc@30b60000 {
+			// 	compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
+			// 	reg = <0x30b60000 0x10000>;
+			// 	interrupts = <0x00 0x18 0x04>;
+			// 	fsl,tuning-start-tap = <0x14>;
+			// 	fsl,tuning-step = <0x02>;
+			// 	status = "okay";
+			// 	clocks = <0x06 0x07 0x08>;
+			// 	clock-names = "ipg\0ahb\0per";
+			// 	bus-width = <0x08>;
+			// 	non-removable;
+			// };
 		};
 	};
 
@@ -188,9 +189,9 @@
 	};
 
 	chosen {
-		bootargs = "clk_ignore_unused console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/vda rootwait rw";
-		// bootargs = "clk_ignore_unused console=ttymxc3,115200 earlycon=ec_imx6q,0x30a60000,115200 root=/dev/mmcblk2p1 rootwait rw";
-		// stdout-path = "/soc@0/bus@30800000/serial@30a60000";
-		stdout-path = "/soc@0/bus@30800000/serial@30890000";
+		// bootargs = "clk_ignore_unused console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/vda rootwait rw";
+		bootargs = "clk_ignore_unused console=ttymxc3,115200 earlycon=ec_imx6q3,0x30a60000,115200 root=/dev/vda rootwait rw";
+		stdout-path = "/soc@0/bus@30800000/serial@30a60000";
+		// stdout-path = "/soc@0/bus@30800000/serial@30890000";
 	};
 };

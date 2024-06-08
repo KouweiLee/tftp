@@ -1,3 +1,5 @@
 *.bin
 *.dtb
 Image*
+hvisor
+hvisor.ko
