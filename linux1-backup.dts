@@ -12,7 +12,6 @@
 		serial1 = "/soc@0/bus@30800000/serial@30890000";
 		serial3 = "/soc@0/bus@30800000/serial@30a60000";
 		mmc2 = "/soc@0/bus@30800000/mmc@30b50000";
-		mmc3 = "/soc@0/bus@30800000/mmc@30b60000";
 		ethernet0 = "/soc@0/bus@30800000/ethernet@30be0000";
 		//ethernet1 = "/soc@0/bus@30800000/ethernet@30bf0000";
 		gpio0 = "/soc@0/bus@30000000/gpio@30200000";
@@ -106,7 +105,36 @@
 		};
 	};
 
+	opp-table {
+		compatible = "operating-points-v2";
+		opp-shared;
+		phandle = <0x04>;
 
+		opp-1200000000 {
+			opp-hz = <0x00 0x47868c00>;
+			opp-microvolt = <0xcf850>;
+			opp-supported-hw = <0x8a0 0x07>;
+			clock-latency-ns = <0x249f0>;
+			opp-suspend;
+		};
+
+		opp-1600000000 {
+			opp-hz = <0x00 0x5f5e1000>;
+			opp-microvolt = <0xe7ef0>;
+			opp-supported-hw = <0xa0 0x07>;
+			clock-latency-ns = <0x249f0>;
+			opp-suspend;
+		};
+
+		opp-1800000000 {
+			opp-hz = <0x00 0x6b49d200>;
+			opp-microvolt = <0xf4240>;
+			opp-supported-hw = <0x20 0x03>;
+			clock-latency-ns = <0x249f0>;
+			opp-suspend;
+		};
+	};
+	
 	interrupt-controller@38800000 {
 		compatible = "arm,gic-v3";
 		reg = <0x00 0x38800000 0x00 0x10000 0x00 0x38880000 0x00 0xc0000>;
@@ -924,7 +952,7 @@
 				assigned-clocks = <0x03 0x67 0x03 0x68 0x03 0x94 0x03 0x6c 0x03 0x48 0x03 0x6f 0x03 0x12 0x03 0x13 0x03 0x14>;
 				assigned-clock-parents = <0x03 0x41 0x03 0x38 0x03 0x40 0x03 0x38 0x03 0x38>;
 				assigned-clock-rates = <0x3b9aca00 0x2faf0800 0x1dcd6500 0x17d78400 0x2faf0800 0x17d78400 0x17700000 0x15888000 0x3df582e0>;
-				init-on-array = <0x115 0x5f 0x10c 0xfe 0xd6>;
+				init-on-array = <0x10c>;
 				phandle = <0x03>;
 			};
 
@@ -1071,30 +1099,11 @@
 				bus-width = <0x04>;
 				status = "okay";
 				pinctrl-names = "default\0state_100mhz\0state_200mhz";
-				pinctrl-0 = <0x4b 0x45 0x46>;
-				pinctrl-1 = <0x4b 0x47 0x46>;
-				pinctrl-2 = <0x4b 0x48 0x46>;
-				cd-gpios = <0x49 0x0c 0x01>;
+				pinctrl-0 = <0x45 0x46>;
+				pinctrl-1 = <0x47 0x46>;
+				pinctrl-2 = <0x48 0x46>;
+				//cd-gpios = <0x49 0x0c 0x01>;
 				vmmc-supply = <0x4a>;
-			};
-
-			mmc@30b60000 {
-				compatible = "fsl,imx8mm-usdhc\0fsl,imx7d-usdhc";
-				reg = <0x30b60000 0x10000>;
-				interrupts = <0x00 0x18 0x04>;
-				clocks = <0x03 0x00 0x03 0x5f 0x03 0x115>;
-				clock-names = "ipg\0ahb\0per";
-				assigned-clocks = <0x03 0xa9>;
-				assigned-clock-rates = <0x17d78400>;
-				fsl,tuning-start-tap = <0x14>;
-				fsl,tuning-step = <0x02>;
-				bus-width = <0x08>;
-				status = "disabled";
-				pinctrl-names = "default\0state_100mhz\0state_200mhz";
-				pinctrl-0 = <0x4b>;
-				pinctrl-1 = <0x4c>;
-				pinctrl-2 = <0x4d>;
-				non-removable;
 			};
 
 			serial@30a60000 {
