@@ -30,7 +30,7 @@
 			entry-method = "psci";
 
 			cpu-pd-wait {
-				// compatible = "arm,idle-state";
+				compatible = "arm,idle-state";
 				arm,psci-suspend-param = <0x10033>;
 				local-timer-stop;
 				entry-latency-us = <0x3e8>;
@@ -58,19 +58,19 @@
 			phandle = <0x11>;
 		};
 
-		cpu@1 {
-			device_type = "cpu";
-			compatible = "arm,cortex-a53";
-			reg = <0x01>;
-			clock-latency = <0xee6c>;
-			next-level-cache = <0x02>;
-			clocks = <0x03 0x11f>;
-			operating-points-v2 = <0x04>;
-			enable-method = "psci";
-			#cooling-cells = <0x02>;
-			cpu-idle-states = <0x06>;
-			phandle = <0x12>;
-		};
+		// cpu@1 {
+		// 	device_type = "cpu";
+		// 	compatible = "arm,cortex-a53";
+		// 	reg = <0x01>;
+		// 	clock-latency = <0xee6c>;
+		// 	next-level-cache = <0x02>;
+		// 	clocks = <0x03 0x11f>;
+		// 	operating-points-v2 = <0x04>;
+		// 	enable-method = "psci";
+		// 	#cooling-cells = <0x02>;
+		// 	cpu-idle-states = <0x06>;
+		// 	phandle = <0x12>;
+		// };
 
 		// cpu@2 {
 		// 	device_type = "cpu";
@@ -106,35 +106,6 @@
 		};
 	};
 
-	opp-table {
-		compatible = "operating-points-v2";
-		opp-shared;
-		phandle = <0x04>;
-
-		opp-1200000000 {
-			opp-hz = <0x00 0x47868c00>;
-			opp-microvolt = <0xcf850>;
-			opp-supported-hw = <0x8a0 0x07>;
-			clock-latency-ns = <0x249f0>;
-			opp-suspend;
-		};
-
-		opp-1600000000 {
-			opp-hz = <0x00 0x5f5e1000>;
-			opp-microvolt = <0xe7ef0>;
-			opp-supported-hw = <0xa0 0x07>;
-			clock-latency-ns = <0x249f0>;
-			opp-suspend;
-		};
-
-		opp-1800000000 {
-			opp-hz = <0x00 0x6b49d200>;
-			opp-microvolt = <0xf4240>;
-			opp-supported-hw = <0x20 0x03>;
-			clock-latency-ns = <0x249f0>;
-			opp-suspend;
-		};
-	};
 
 	interrupt-controller@38800000 {
 		compatible = "arm,gic-v3";
@@ -179,8 +150,7 @@
 			no-map;
 			reg = <0x00 0x50000000 0x00 0x30000000>;
 		};
-		
-		// 这个shared-dma-pool是用来给CMA机制分配内存的，是virtio driver要用。
+
 		// vdev0vring0@55000000 {
 		// 	compatible = "shared-dma-pool";
 		// 	reg = <0x00 0x55000000 0x00 0x8000>;
@@ -281,7 +251,7 @@
 	};
 
 	psci {
-		compatible = "arm,psci-1.0";
+		compatible = "arm,psci-0.2";
 		method = "smc";
 	};
 
@@ -974,124 +944,6 @@
 			#size-cells = <0x01>;
 			ranges;
 
-			i2c@30a20000 {
-				#address-cells = <0x01>;
-				#size-cells = <0x00>;
-				compatible = "fsl,imx8mp-i2c\0fsl,imx21-i2c";
-				reg = <0x30a20000 0x10000>;
-				interrupts = <0x00 0x23 0x04>;
-				clocks = <0x03 0xcd>;
-				status = "okay";
-				clock-frequency = <0x186a0>;
-				pinctrl-names = "default";
-				pinctrl-0 = <0x2d>;
-
-				pca9450@25 {
-					reg = <0x25>;
-					compatible = "nxp,pca9450";
-					pinctrl-0 = <0x2e>;
-					gpio_intr = <0x2f 0x03 0x01>;
-
-					regulators {
-						#address-cells = <0x01>;
-						#size-cells = <0x00>;
-						pca9450,pmic-buck2-uses-i2c-dvs;
-						pca9450,pmic-buck2-dvs-voltage = <0xe7ef0 0xcf850>;
-
-						regulator@0 {
-							reg = <0x00>;
-							regulator-compatible = "buck1";
-							regulator-min-microvolt = <0x927c0>;
-							regulator-max-microvolt = <0x2160ec>;
-							regulator-boot-on;
-							regulator-always-on;
-							regulator-ramp-delay = <0xc35>;
-						};
-
-						regulator@1 {
-							reg = <0x01>;
-							regulator-compatible = "buck2";
-							regulator-min-microvolt = <0x927c0>;
-							regulator-max-microvolt = <0x2160ec>;
-							regulator-boot-on;
-							regulator-always-on;
-							regulator-ramp-delay = <0xc35>;
-							phandle = <0x07>;
-						};
-
-						regulator@3 {
-							reg = <0x03>;
-							regulator-compatible = "buck4";
-							regulator-min-microvolt = <0x927c0>;
-							regulator-max-microvolt = <0x33e140>;
-							regulator-boot-on;
-							regulator-always-on;
-						};
-
-						regulator@4 {
-							reg = <0x04>;
-							regulator-compatible = "buck5";
-							regulator-min-microvolt = <0x927c0>;
-							regulator-max-microvolt = <0x33e140>;
-							regulator-boot-on;
-							regulator-always-on;
-						};
-
-						regulator@5 {
-							reg = <0x05>;
-							regulator-compatible = "buck6";
-							regulator-min-microvolt = <0x927c0>;
-							regulator-max-microvolt = <0x33e140>;
-							regulator-boot-on;
-							regulator-always-on;
-						};
-
-						regulator@6 {
-							reg = <0x06>;
-							regulator-compatible = "ldo1";
-							regulator-min-microvolt = <0x186a00>;
-							regulator-max-microvolt = <0x325aa0>;
-							regulator-boot-on;
-							regulator-always-on;
-						};
-
-						regulator@7 {
-							reg = <0x07>;
-							regulator-compatible = "ldo2";
-							regulator-min-microvolt = "\0\f5";
-							regulator-max-microvolt = <0x118c30>;
-							regulator-boot-on;
-							regulator-always-on;
-						};
-
-						regulator@8 {
-							reg = <0x08>;
-							regulator-compatible = "ldo3";
-							regulator-min-microvolt = "\0\f5";
-							regulator-max-microvolt = <0x325aa0>;
-							regulator-boot-on;
-							regulator-always-on;
-						};
-
-						regulator@9 {
-							reg = <0x09>;
-							regulator-compatible = "ldo4";
-							regulator-min-microvolt = "\0\f5";
-							regulator-max-microvolt = <0x325aa0>;
-							regulator-boot-on;
-							regulator-always-on;
-						};
-
-						regulator@10 {
-							reg = <0x0a>;
-							regulator-compatible = "ldo5";
-							regulator-min-microvolt = <0x1b7740>;
-							regulator-max-microvolt = <0x325aa0>;
-						};
-					};
-				};
-			};
-
 			// i2c@30a40000 {
 			// 	#address-cells = <0x01>;
 			// 	#size-cells = <0x00>;
@@ -1310,42 +1162,42 @@
 				};
 			};
 
-			// ethernet@30bf0000 {
-			// 	compatible = "nxp,imx8mp-dwmac-eqos\0snps,dwmac-5.10a";
-			// 	reg = <0x30bf0000 0x10000>;
-			// 	interrupts = <0x00 0x86 0x04 0x00 0x87 0x04>;
-			// 	interrupt-names = "eth_wake_irq\0macirq";
-			// 	clocks = <0x03 0xed 0x03 0xe1 0x03 0x82 0x03 0x81>;
-			// 	clock-names = "stmmaceth\0pclk\0ptp_ref\0tx";
-			// 	assigned-clocks = <0x03 0x5e 0x03 0x82 0x03 0x81>;
-			// 	assigned-clock-parents = <0x03 0x36 0x03 0x3a 0x03 0x3b>;
-			// 	assigned-clock-rates = <0x00 0x5f5e100 0x7735940>;
-			// 	nvmem-cells = <0x52>;
-			// 	nvmem-cell-names = "mac-address";
-			// 	nvmem_macaddr_swap;
-			// 	intf_mode = <0x29 0x04>;
-			// 	status = "okay";
-			// 	pinctrl-names = "default";
-			// 	pinctrl-0 = <0x53>;
-			// 	reset-gpio = <0x25 0x05 0x01>;
-			// 	phy-mode = "rgmii-id";
-			// 	phy-handle = <0x54>;
+			ethernet@30bf0000 {
+				compatible = "nxp,imx8mp-dwmac-eqos\0snps,dwmac-5.10a";
+				reg = <0x30bf0000 0x10000>;
+				interrupts = <0x00 0x86 0x04 0x00 0x87 0x04>;
+				interrupt-names = "eth_wake_irq\0macirq";
+				clocks = <0x03 0xed 0x03 0xe1 0x03 0x82 0x03 0x81>;
+				clock-names = "stmmaceth\0pclk\0ptp_ref\0tx";
+				assigned-clocks = <0x03 0x5e 0x03 0x82 0x03 0x81>;
+				assigned-clock-parents = <0x03 0x36 0x03 0x3a 0x03 0x3b>;
+				assigned-clock-rates = <0x00 0x5f5e100 0x7735940>;
+				nvmem-cells = <0x52>;
+				nvmem-cell-names = "mac-address";
+				nvmem_macaddr_swap;
+				intf_mode = <0x29 0x04>;
+				status = "disabled";
+				pinctrl-names = "default";
+				pinctrl-0 = <0x53>;
+				reset-gpio = <0x25 0x05 0x01>;
+				phy-mode = "rgmii-id";
+				phy-handle = <0x54>;
 
-			// 	mdio {
-			// 		compatible = "snps,dwmac-mdio";
-			// 		#address-cells = <0x01>;
-			// 		#size-cells = <0x00>;
+				mdio {
+					compatible = "snps,dwmac-mdio";
+					#address-cells = <0x01>;
+					#size-cells = <0x00>;
 
-			// 		ethernet-phy@1 {
-			// 			compatible = "ethernet-phy-ieee802.3-c22";
-			// 			reg = <0x01>;
-			// 			eee-broken-1000t;
-			// 			at803x,vddio-1p8v;
-			// 			at803x,hibernate-disable;
-			// 			phandle = <0x54>;
-			// 		};
-			// 	};
-			// };
+					ethernet-phy@1 {
+						compatible = "ethernet-phy-ieee802.3-c22";
+						reg = <0x01>;
+						eee-broken-1000t;
+						at803x,vddio-1p8v;
+						at803x,hibernate-disable;
+						phandle = <0x54>;
+					};
+				};
+			};
 		};
 	};
 
@@ -1370,7 +1222,7 @@
 	chosen {
 		//bootargs = "earlycon console=ttyS0";
 		//bootargs = "earlycon clk_ignore_unused console=ttymxc1,115200 root=/dev/mmcblk1p1 rootwait rw";
-		bootargs = "clk_ignore_unused console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/mmcblk2p1 rootwait rw";
+		bootargs = "clk_ignore_unused iomem=relaxed console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/mmcblk2p1 rootwait rw";
 		stdout-path = "/soc@0/bus@30800000/serial@30890000";
 	};
 

@@ -1,8 +1,10 @@
 /dts-v1/;
 
 / {
-	model = "Freescale i.MX8MQ EVK";
-	compatible = "fsl,imx8mq-evk\0fsl,imx8mq";
+	//model = "Freescale i.MX8MQ EVK";
+	//compatible = "fsl,imx8mq-evk\0fsl,imx8mq";
+	compatible = "forlinx,ok8mp-c\0fsl,imx8mp-evk\0fsl,imx8mp";
+	model = "Forlinx OK8MPlus-C board";
 	interrupt-parent = <0x01>;
 	#address-cells = <0x02>;
 	#size-cells = <0x02>;
@@ -10,8 +12,8 @@
 	aliases {
 		// serial1 = "/soc@0/bus@30800000/serial@30890000";
 		serial3 = "/soc@0/bus@30800000/serial@30a60000";
-	    mmc3 = "/soc@0/bus@30800000/mmc@30b60000";
-		ethernet1 = "/soc@0/bus@30800000/ethernet@30bf0000";
+	    	mmc3 = "/soc@0/bus@30800000/mmc@30b60000";
+		ethernet0 = "/soc@0/bus@30800000/ethernet@30bf0000";
 	};
 
 	memory@50000000 {
@@ -64,14 +66,6 @@
 		interrupt-affinity = <0x03 0x04>;
 	};
 
-	clock@1 {
-		compatible = "fixed-clock";
-		#clock-cells = <0x00>;
-		clock-frequency = <0x16e3600>;
-		clock-output-names = "osc_24m";
-		phandle = <0x05>;
-	};
-
 	interrupt-controller@38800000 {
 		compatible = "arm,gic-v3";
 		reg = <0x00 0x38800000 0x00 0x10000 0x00 0x38880000 0x00 0xc0000>;
@@ -88,12 +82,29 @@
 		clock-frequency = <0x7f2815>;
 	};
 
+	clock@1 {
+		compatible = "fixed-clock";
+		#clock-cells = <0x00>;
+		clock-frequency = <0x16e3600>;
+		clock-output-names = "osc_24m";
+		phandle = <0x05>;
+	};
+
+
 	clock@7 {
 		compatible = "fixed-clock";
 		#clock-cells = <0x00>;
 		clock-frequency = <0x00>;
 		clock-output-names = "clk_dummy";
 		phandle = <0x06>;
+	};
+
+	clock@9 {
+		compatible = "fixed-clock";
+		#clock-cells = <0x00>;
+		clock-frequency = <0xfdad680>;
+		clock-output-names = "266m";
+		phandle = <0x07>;
 	};
 	
 	clock@8 {
@@ -104,22 +115,32 @@
 		phandle = <0x08>;
 	};
 
-
-
-	clock@9 {
+	clock@12 {
 		compatible = "fixed-clock";
 		#clock-cells = <0x00>;
-		clock-frequency = <0xfdad680>;
-		clock-output-names = "266m";
-		phandle = <0x07>;
+		clock-frequency = <0x5f5e100>;
+		clock-output-names = "100m";
+		phandle = <0x09>;
+	};
+
+	clock@11 {
+		compatible = "fixed-clock";
+		#clock-cells = <0x00>;
+		clock-frequency = <0x7735940>;
+		clock-output-names = "125m";
+		phandle = <0x0a>;
 	};
 
 	clock@10 {
 		compatible = "fixed-clock";
 		#clock-cells = <0x00>;
-		clock-frequency = <0x4c4b400>;
+		clock-frequency = <0x3F940AB>;
 		clock-output-names = "80m";
+		phandle = <0x0b>;
 	};
+
+
+
 
 	soc@0 {
 		compatible = "simple-bus";
@@ -127,6 +148,20 @@
 		#size-cells = <0x01>;
 		ranges = <0x00 0x00 0x00 0x3e000000>;
 		// dma-ranges = <0x40000000 0x00 0x40000000 0xc0000000>;
+		
+		bus@30000000 {
+			compatible = "simple-bus";
+			reg = <0x30000000 0x400000>;
+			#address-cells = <0x01>;
+			#size-cells = <0x01>;
+			ranges;
+			
+			iomuxc-gpr@30340000 {
+			 	compatible = "fsl,imx8mp-iomuxc-gpr\0fsl,imx7d-iomuxc-gpr\0fsl,imx6q-iomuxc-gpr\0syscon";
+			 	reg = <0x30340000 0x10000>;
+			 	phandle = <0x29>;
+			};
+		};
 
 		bus@30800000 {
 			compatible = "simple-bus";
@@ -187,18 +222,18 @@
 				reg = <0x30bf0000 0x10000>;
 				interrupts = <0x00 0x86 0x04 0x00 0x87 0x04>;
 				interrupt-names = "eth_wake_irq\0macirq";
-				clocks = <0x03 0xed 0x03 0xe1 0x03 0x82 0x03 0x81>;
+				clocks = <0x07 0x0b 0x09 0x0a>;
 				clock-names = "stmmaceth\0pclk\0ptp_ref\0tx";
-				assigned-clocks = <0x03 0x5e 0x03 0x82 0x03 0x81>;
-				assigned-clock-parents = <0x03 0x36 0x03 0x3a 0x03 0x3b>;
-				assigned-clock-rates = <0x00 0x5f5e100 0x7735940>;
-				nvmem-cells = <0x52>;
-				nvmem-cell-names = "mac-address";
-				nvmem_macaddr_swap;
+				// assigned-clocks = <0x03 0x5e 0x03 0x82 0x03 0x81>;
+				// assigned-clock-parents = <0x03 0x36 0x03 0x3a 0x03 0x3b>;
+				// assigned-clock-rates = <0x00 0x5f5e100 0x7735940>;
+				// nvmem-cells = <0x52>;
+				// nvmem-cell-names = "mac-address";
+				// nvmem_macaddr_swap;
 				intf_mode = <0x29 0x04>;
 				status = "okay";
-				pinctrl-names = "default";
-				pinctrl-0 = <0x53>;
+				// pinctrl-names = "default";
+				// pinctrl-0 = <0x53>;
 				reset-gpio = <0x25 0x05 0x01>;
 				phy-mode = "rgmii-id";
 				phy-handle = <0x54>;
