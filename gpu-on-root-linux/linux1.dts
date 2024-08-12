@@ -148,7 +148,7 @@
 
 	memory@50000000 {
 		device_type = "memory";
-		reg = <0x00 0x50000000 0x00 0x80000000>;
+		reg = <0x0 0x50000000 0x0 0x80000000>;
 	};
 
 	reserved-memory {
@@ -159,7 +159,7 @@
 		linux,cma {
 			compatible = "shared-dma-pool";
 			reusable;
-			size = <0x00 0x3c000000>;
+			size = <0x00 0x10000000>;
 			alloc-ranges = <0x00 0x80000000 0x00 0xc0000000>;
 			linux,cma-default;
 		};
@@ -1378,7 +1378,7 @@
 	mix_gpu_ml {
 		compatible = "fsl,imx8mp-gpu\0fsl,imx8-gpu-ss";
 		cores = <0x8c 0x8d 0x8e>;
-		reg = <0x00 0x40000000 0x00 0xc0000000 0x00 0x00 0x00 0x10000000>;
+		reg = <0x00 0x80000000 0x00 0xc0000000 0x00 0x00 0x00 0x10000000>;
 		reg-names = "phys_baseaddr\0contiguous_mem";
 		status = "okay";
 	};

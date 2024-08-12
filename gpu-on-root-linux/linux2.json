@@ -33,27 +33,9 @@
             "physical_start": "0xa003600",
             "virtual_start":  "0xa003600",
             "size": "0x200"
-        },
-        {
-            "type": "io",
-            "physical_start": "0x38000000",
-            "virtual_start":  "0x38000000",
-            "size": "0x8000"
-        },
-        {
-            "type": "io",
-            "physical_start": "0x38008000",
-            "virtual_start":  "0x38008000",
-            "size": "0x8000"
-        },
-        {
-            "type": "io",
-            "physical_start": "0x38500000",
-            "virtual_start":  "0x38500000",
-            "size": "0x20000"
         }
     ],
-    "interrupts": [61, 75, 76, 78, 35, 57, 45],
+    "interrupts": [61, 75, 76, 78],
     "kernel_filepath": "./Image",
     "dtb_filepath": "./linux2.dtb",
     "kernel_load_paddr": "0x50400000",
