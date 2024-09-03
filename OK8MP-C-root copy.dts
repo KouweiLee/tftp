@@ -165,9 +165,9 @@
 		phandle = <0x01>;
 	};
 
-	memory@40000000 {
+	memory@50000000 {
 		device_type = "memory";
-		reg = <0x00 0x40000000 0x00 0x80000000>;
+		reg = <0x00 0x50000000 0x00 0x80000000>;
 	};
 
 	reserved-memory {
@@ -3115,10 +3115,6 @@
 		};
 	};
 
-	chosen {
-		stdout-path = "/soc@0/bus@30800000/serial@30890000";
-	};
-
 	leds {
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
@@ -3394,5 +3390,18 @@
 	dsi-host {
 		compatible = "samsung,sec-mipi-dsi";
 		status = "okay";
+	};
+
+	chosen {
+		//bootargs = "earlycon console=ttyS0";
+		//bootargs = "earlycon clk_ignore_unused console=ttymxc1,115200 root=/dev/mmcblk1p1 rootwait rw";
+		bootargs = "clk_ignore_unused console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 root=/dev/mmcblk2p1 rootwait rw";
+		stdout-path = "/soc@0/bus@30800000/serial@30890000";
+	};
+
+	hvisor_device {
+		compatible = "hvisor";
+		interrupt-parent = <0x01>;
+		interrupts = <0x00 0x20 0x01>;
 	};
 };
