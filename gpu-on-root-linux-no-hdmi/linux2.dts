@@ -290,11 +290,11 @@
 		// stdout-path = "/soc@0/bus@30800000/serial@30a60000";
 
 		// virtio blk and real console:
-		bootargs = "clk_ignore_unused console=ttymxc3,115200 earlycon=ec_imx6q3,0x30a60000,115200 root=/dev/vda rootwait rw";
-		stdout-path = "/soc@0/bus@30800000/serial@30a60000";
+		// bootargs = "clk_ignore_unused console=ttymxc3,115200 earlycon=ec_imx6q3,0x30a60000,115200 root=/dev/vda rootwait rw";
+		// stdout-path = "/soc@0/bus@30800000/serial@30a60000";
 
 		// virtio blk and virtio console:
-		// bootargs = "clk_ignore_unused earlycon=virtio,mmio,0xa003800 console=hvc0 root=/dev/vda rootwait rw";
-		// stdout-path = "/virtio_mmio@a003800";
+		bootargs = "clk_ignore_unused earlycon=virtio,mmio,0xa003800 console=hvc0 root=/dev/vda rootwait rw";
+		stdout-path = "/virtio_mmio@a003800";
 	};
 };
