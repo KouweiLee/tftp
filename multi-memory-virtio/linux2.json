@@ -54,17 +54,6 @@
         }
     ],
     "interrupts": [61, 75, 76, 78, 35, 57, 45],
-    "ivc_configs": [
-        {
-            "ivc_id": 0,
-            "peer_id": 1,
-            "shared_mem_ipa": "0xd0000000",
-            "rw_sec_size": "0",
-            "out_sec_size": "0x1000",
-            "interrupt_num": 65,
-            "max_peers": 2
-        }
-    ],
     "kernel_filepath": "./Image",
     "dtb_filepath": "./linux2.dtb",
     "kernel_load_paddr": "0x50400000",
